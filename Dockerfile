@@ -24,6 +24,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 6080 5900
+EXPOSE 8080 6080 5900
 
-CMD ["bash", "-c", "rm -f /tmp/.X99-lock /tmp/.X11-unix/X99 && Xvfb :99 -screen 0 1024x768x24 & sleep 2 && x11vnc -display :99 -forever -nopw -shared -rfbport 5900 & websockify --web /usr/share/novnc 6080 localhost:5900 & python 7.py"]
+CMD ["bash", "-c", "python server.py & rm -f /tmp/.X99-lock /tmp/.X11-unix/X99 && Xvfb :99 -screen 0 1024x768x24 & sleep 2 && x11vnc -display :99 -forever -nopw -shared -rfbport 5900 & websockify --web /usr/share/novnc 6080 localhost:5900 & python 7.py"]
