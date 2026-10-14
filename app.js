@@ -343,9 +343,10 @@
      * 5. Точный расчёт пропорций без искажений
      */
     function recalculateLayout() {
+        const isCamMode = document.body.classList.contains('cam-mode');
         const containerRect = viewportContainer.getBoundingClientRect();
-        const availableW = Math.max(300, containerRect.width - 24);
-        const availableH = Math.max(200, containerRect.height - 24);
+        const availableW = isCamMode ? window.innerWidth : Math.max(300, containerRect.width - 24);
+        const availableH = isCamMode ? window.innerHeight : Math.max(200, containerRect.height - 24);
 
         const targetRatio = FORMAT_PRESETS[currentFormat].ratio;
         cols = targetCols;
@@ -373,8 +374,8 @@
         fallbackCanvas.width = cols;
         fallbackCanvas.height = rows;
 
-        formatBadge.textContent = FORMAT_PRESETS[currentFormat].name;
-        resolutionBadge.textContent = `${cols} × ${rows}`;
+        if (formatBadge) formatBadge.textContent = FORMAT_PRESETS[currentFormat].name;
+        if (resolutionBadge) resolutionBadge.textContent = `${cols} × ${rows}`;
     }
 
     window.addEventListener('resize', recalculateLayout);
@@ -1345,6 +1346,115 @@
     function stopScamPopups() {
         if (scamIntervalId) clearInterval(scamIntervalId);
         if (scamOverlay) scamOverlay.innerHTML = '';
+    }
+
+    /* ==========================================================================
+       16. СИСТЕМНАЯ ВИРТУАЛЬНАЯ КАМЕРА MACOS (WEBSOCKET СТРИМЕР В PYTHON ДЕМОН)
+       ========================================================================== */
+    const btnVcamToggle = document.getElementById('btn-vcam-toggle');
+    const vcamLabel = document.getElementById('vcam-label');
+    let isVcamActive = false;
+    let vcamSocket = null;
+    let vcamIntervalId = null;
+
+    function startVcamStream() {
+        if (vcamSocket && vcamSocket.readyState === WebSocket.OPEN) return;
+
+        showToast('Подключение к серверу вирткамеры...');
+        try {
+            vcamSocket = new WebSocket('ws://localhost:8081/ws');
+            vcamSocket.binaryType = 'arraybuffer';
+
+            vcamSocket.onopen = () => {
+                isVcamActive = true;
+                if (btnVcamToggle) btnVcamToggle.classList.add('active');
+                if (vcamLabel) vcamLabel.textContent = 'В эфире';
+                showToast('🎥 Вирткамера: поток активен на ws://localhost:8081');
+
+                // Передаём кадры холста с частотой ~30 FPS
+                vcamIntervalId = setInterval(() => {
+                    if (!vcamSocket || vcamSocket.readyState !== WebSocket.OPEN) return;
+                    if (isPaused) return;
+
+                    asciiCanvas.toBlob((blob) => {
+                        if (blob && vcamSocket && vcamSocket.readyState === WebSocket.OPEN) {
+                            blob.arrayBuffer().then(buf => {
+                                if (vcamSocket && vcamSocket.readyState === WebSocket.OPEN) {
+                                    vcamSocket.send(buf);
+                                }
+                            });
+                        }
+                    }, 'image/jpeg', 0.85);
+                }, 33);
+            };
+
+            vcamSocket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'status' && data.msg) {
+                        showToast(data.msg);
+                    }
+                } catch (e) {}
+            };
+
+            vcamSocket.onclose = () => {
+                stopVcamStream(false);
+            };
+
+            vcamSocket.onerror = (err) => {
+                console.warn('Vcam socket error:', err);
+                stopVcamStream(false);
+                showToast('⚠️ Сервер вирткамеры не найден. Запустите: python virtual_cam_server.py');
+            };
+        } catch (e) {
+            console.error('Ошибка инициализации вирткамеры:', e);
+            stopVcamStream(false);
+            showToast('⚠️ Ошибка подключения к вирткамере');
+        }
+    }
+
+    function stopVcamStream(userInitiated = true) {
+        isVcamActive = false;
+        if (vcamIntervalId) {
+            clearInterval(vcamIntervalId);
+            vcamIntervalId = null;
+        }
+        if (vcamSocket) {
+            try { vcamSocket.close(); } catch (e) {}
+            vcamSocket = null;
+        }
+        if (btnVcamToggle) btnVcamToggle.classList.remove('active');
+        if (vcamLabel) vcamLabel.textContent = 'Вирткамера';
+        if (userInitiated) {
+            showToast('🎥 Трансляция в вирткамеру остановлена');
+        }
+    }
+
+    if (btnVcamToggle) {
+        btnVcamToggle.addEventListener('click', () => {
+            if (isVcamActive) {
+                stopVcamStream(true);
+            } else {
+                startVcamStream();
+            }
+        });
+    }
+
+    // Обработка параметров URL (?mode=cam или ?stream=clean для чистого захвата в OBS)
+    const urlParams = new URLSearchParams(window.location.search);
+    if ((urlParams.has('mode') && urlParams.get('mode') === 'cam') || urlParams.has('stream')) {
+        document.body.classList.add('cam-mode');
+        if (urlParams.has('format') && FORMAT_PRESETS[urlParams.get('format')]) {
+            currentFormat = urlParams.get('format');
+        } else {
+            currentFormat = '16_9';
+        }
+        if (urlParams.has('mode_color') && MODE_MAP[urlParams.get('mode_color')] !== undefined) {
+            currentMode = urlParams.get('mode_color');
+        }
+        if (urlParams.has('res')) {
+            targetCols = Math.max(10, Math.min(360, parseInt(urlParams.get('res'), 10) || 120));
+        }
     }
 
     initCamera();

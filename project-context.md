@@ -31,3 +31,9 @@
 ## Геометрия вьюпорта и Flexbox Layout
 - **Причина схлопывания холста до 200px**: при оборачивании `#viewport-container` в `#main-stage` свойство `align-items: center` на родителе при отсутствии `height: 100%` схлопывало кросс-ось (высоту) контейнера до высоты контента, из-за чего `containerRect.height` падал до минимума (200px).
 - **Решение**: `#main-stage` и `#viewport-container` зафиксированы со свойствами `align-items: stretch; height: 100%; min-height: 0; min-width: 0;`, что гарантирует получение холстом всего доступного пространства экрана (700–900px).
+
+## Системная виртуальная камера macOS (CoreMediaIO / OBS)
+- **Ограничения macOS**: AVFoundation не позволяет создавать устройства камеры без системного DAL-плагина (`/Library/CoreMediaIO/Plug-Ins/DAL/`) или `CMIOExtension`.
+- **Режим чистого потока (`?mode=cam`)**: убирает весь интерфейс, оставляя чистый холст на 100vw × 100vh для нативного захвата в OBS Studio (Browser Source) на 60 FPS.
+- **WebSocket мост и MJPEG**: `virtual_cam_server.py` (порт 8081) принимает бинарные JPEG-кадры из WebGL-холста и отдаёт их по HTTP в формате `multipart/x-mixed-replace` на `/video_feed`.
+

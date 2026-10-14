@@ -1022,3 +1022,76 @@ body {
 }
 .scam-singles .scam-cta { background: #f06292; color: #fff; }
 
+/* ==========================================================================
+   РЕЖИМ ВИРТУАЛЬНОЙ КАМЕРЫ И ЧИСТОГО ПОТОКА ДЛЯ OBS (?mode=cam)
+   ========================================================================== */
+
+.vcam-toggle-btn {
+    border: 1px solid rgba(10, 132, 255, 0.4) !important;
+}
+
+.vcam-toggle-btn.active {
+    background: rgba(255, 45, 85, 0.25) !important;
+    color: #ff3b30 !important;
+    border-color: rgba(255, 45, 85, 0.6) !important;
+    box-shadow: 0 0 14px rgba(255, 45, 85, 0.4);
+}
+
+.vcam-toggle-btn.active svg {
+    stroke: #ff3b30;
+    animation: vcamPulse 1.2s infinite alternate;
+}
+
+@keyframes vcamPulse {
+    from { transform: scale(1); opacity: 0.8; }
+    to { transform: scale(1.15); opacity: 1; }
+}
+
+/* При открытии с ?mode=cam интерфейс полностью исчезает, оставляя чистый холст */
+body.cam-mode #mac-header,
+body.cam-mode #camera-modes-bar,
+body.cam-mode #floating-dock,
+body.cam-mode .adhd-panel,
+body.cam-mode #scam-overlay,
+body.cam-mode #zoom-hud,
+body.cam-mode #toast,
+body.cam-mode #countdown-overlay {
+    display: none !important;
+}
+
+body.cam-mode #app-container {
+    background: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+body.cam-mode #main-stage {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+body.cam-mode #viewport-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+body.cam-mode #canvas-wrapper {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    background: #000000 !important;
+}
+
+body.cam-mode #ascii-canvas,
+body.cam-mode #ascii-svg {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+}
