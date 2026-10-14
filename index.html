@@ -28,6 +28,10 @@
             <!-- Верхние быстрые тумблеры iPhone (Таймер, Сетка 3x3, Зеркало) -->
             <div class="header-center">
                 <div class="top-controls">
+                    <div class="engine-selector" id="engine-selector">
+                        <button class="engine-btn active" data-engine="webgl" title="Аппаратный GPU рендеринг (60+ FPS)">⚡️ GPU</button>
+                        <button class="engine-btn" data-engine="svg" title="Реальный векторный SVG рендеринг">📐 SVG</button>
+                    </div>
                     <button id="btn-timer" class="top-icon-btn" title="Таймер спуска (T)">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         <span id="timer-label">ВЫКЛ</span>
@@ -44,6 +48,9 @@
             </div>
 
             <div class="header-right">
+                <button id="btn-adhd-toggle" class="top-icon-btn adhd-toggle-btn" title="Режим СДВГ / Brainrot (игры, залипалово, реклама)">
+                    <span>🧠 СДВГ</span>
+                </button>
                 <div class="stat-badge" id="format-badge">КВАДРАТ 1:1</div>
                 <div class="stat-badge" id="resolution-badge">100 × 100</div>
                 <div class="stat-badge fps" id="fps-counter">60 FPS</div>
@@ -53,10 +60,30 @@
             </div>
         </header>
 
-        <!-- Центральная область холста (Адаптивный вьюпорт камеры) -->
-        <main id="viewport-container">
-            <div id="canvas-wrapper">
-                <canvas id="ascii-canvas"></canvas>
+        <!-- Основная сцена с опциональными боковыми СДВГ-панелями -->
+        <div id="main-stage">
+            <!-- Левая панель: Браузерные ретро-игры -->
+            <aside id="adhd-left-panel" class="adhd-panel hidden">
+                <div class="adhd-panel-header">
+                    <span>🎮 Игры от скуки</span>
+                    <span id="flappy-score-badge" class="adhd-badge">Счёт: 0</span>
+                </div>
+                <div class="adhd-game-wrapper">
+                    <canvas id="flappy-canvas" width="220" height="320"></canvas>
+                    <div id="flappy-overlay" class="flappy-ui">
+                        <span id="flappy-msg">Клик для прыжка</span>
+                    </div>
+                </div>
+                <div class="adhd-panel-footer">
+                    <button id="btn-flappy-restart" class="adhd-btn">Заново</button>
+                </div>
+            </aside>
+
+            <!-- Центральная область холста (Адаптивный вьюпорт камеры) -->
+            <main id="viewport-container">
+                <div id="canvas-wrapper">
+                    <canvas id="ascii-canvas"></canvas>
+                    <svg id="ascii-svg" class="hidden" xmlns="http://www.w3.org/2000/svg"></svg>
 
                 <!-- Сетка третей 3x3 iPhone -->
                 <div id="camera-grid" class="hidden">
@@ -94,7 +121,25 @@
                 <!-- Вспышка затвора Apple Camera -->
                 <div id="flash-overlay"></div>
             </div>
-        </main>
+            </main>
+
+            <!-- Правая панель: СДВГ-залипалово (шарики и туннель) -->
+            <aside id="adhd-right-panel" class="adhd-panel hidden">
+                <div class="adhd-panel-header">
+                    <span>🌀 СДВГ Залипалово</span>
+                    <div class="satisfy-selector">
+                        <button class="satisfy-btn active" data-satisfy="balls">Шары</button>
+                        <button class="satisfy-btn" data-satisfy="tunnel">3D</button>
+                    </div>
+                </div>
+                <div class="adhd-canvas-wrapper">
+                    <canvas id="satisfy-canvas" width="220" height="320"></canvas>
+                </div>
+                <div class="adhd-panel-footer">
+                    <span class="adhd-hint">💡 Води курсором по холсту</span>
+                </div>
+            </aside>
+        </div>
 
         <!-- Режимы съёмки iPhone (Карусель форматов) -->
         <div id="camera-modes-bar">
@@ -150,6 +195,13 @@
                         <span>Текст</span>
                     </button>
 
+                    <!-- Выбор формата снимка: PNG, SVG, PDF -->
+                    <div class="export-format-selector" id="export-format-selector" title="Формат сохранения снимка">
+                        <button class="export-btn active" data-export="png">PNG</button>
+                        <button class="export-btn" data-export="svg">SVG</button>
+                        <button class="export-btn" data-export="pdf">PDF</button>
+                    </div>
+
                     <!-- Фирменная круглая кнопка спуска затвора iPhone -->
                     <button id="btn-shutter" class="apple-shutter" title="Сделать снимок (S/Enter)">
                         <span class="shutter-inner"></span>
@@ -163,6 +215,9 @@
             <span id="toast-icon">✓</span>
             <span id="toast-message">Снимок сохранён</span>
         </div>
+
+        <!-- Оверлей вирусных скам-баннеров и объявлений (СДВГ-режим) -->
+        <div id="scam-overlay" class="hidden"></div>
     </div>
 
     <!-- Скрытые элементы камеры -->

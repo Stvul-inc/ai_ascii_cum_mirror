@@ -131,14 +131,41 @@ body {
     letter-spacing: -0.2px;
 }
 
-/* Верхние тумблеры iOS */
 .top-controls {
     display: flex;
+    align-items: center;
     gap: 6px;
     background: rgba(0, 0, 0, 0.4);
     padding: 3px;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-subtle);
+}
+
+.engine-selector {
+    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    padding: 2px;
+    gap: 2px;
+    border: 1px solid var(--border-subtle);
+}
+
+.engine-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.engine-btn.active {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .top-icon-btn {
@@ -231,6 +258,20 @@ body {
 #ascii-canvas {
     display: block;
     image-rendering: pixelated;
+}
+
+#ascii-canvas.hidden {
+    display: none !important;
+}
+
+#ascii-svg {
+    display: block;
+    user-select: none;
+    shape-rendering: crispEdges;
+}
+
+#ascii-svg.hidden {
+    display: none !important;
 }
 
 /* Сетка третей 3х3 Apple */
@@ -564,6 +605,38 @@ body {
     color: #4da2ff;
 }
 
+/* Селектор формата сохранения снимка: PNG / SVG / PDF */
+.export-format-selector {
+    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    padding: 2px;
+    gap: 2px;
+    border: 1px solid var(--border-subtle);
+}
+
+.export-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 5px 8px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.export-btn:hover {
+    color: #fff;
+}
+
+.export-btn.active {
+    background: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 122, 255, 0.4);
+}
+
 /* Фирменная кнопка спуска затвора iPhone */
 .apple-shutter {
     width: 44px;
@@ -633,3 +706,310 @@ body {
     color: var(--accent-green);
     font-weight: bold;
 }
+
+/* ==========================================================================
+   СДВГ / BRAINROT РЕЖИМ (Изолированный, включается строго по кнопке)
+   ========================================================================== */
+
+#main-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* В обычном состоянии боковые панели гарантированно скрыты */
+.adhd-panel {
+    display: none !important;
+}
+
+#scam-overlay {
+    display: none !important;
+}
+
+/* Когда СДВГ-режим активен */
+#app-container.adhd-active #main-stage {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 16px;
+}
+
+#app-container.adhd-active .adhd-panel {
+    display: flex !important;
+    flex-direction: column;
+    width: 240px;
+    height: 440px;
+    background: rgba(18, 18, 22, 0.88);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    z-index: 20;
+    animation: adhdPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes adhdPop {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+#app-container.adhd-active #scam-overlay {
+    display: block !important;
+}
+
+.adhd-toggle-btn {
+    border: 1px solid rgba(175, 82, 222, 0.4) !important;
+    background: rgba(175, 82, 222, 0.15) !important;
+    color: #df9eff !important;
+}
+
+.adhd-toggle-btn.active {
+    background: linear-gradient(135deg, #ff2d55, #af52de) !important;
+    color: #fff !important;
+    box-shadow: 0 0 16px rgba(255, 45, 85, 0.6) !important;
+    animation: adhdGlow 1.5s infinite alternate;
+}
+
+@keyframes adhdGlow {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.25); }
+}
+
+.adhd-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.adhd-badge {
+    background: var(--accent-blue);
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    color: #fff;
+}
+
+.adhd-game-wrapper,
+.adhd-canvas-wrapper {
+    flex: 1;
+    position: relative;
+    background: #08080a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#flappy-canvas,
+#satisfy-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.flappy-ui {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+    transition: opacity 0.2s ease;
+}
+
+.flappy-ui.hidden {
+    opacity: 0;
+}
+
+.adhd-panel-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.adhd-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.adhd-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.adhd-hint {
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.satisfy-selector {
+    display: flex;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    padding: 2px;
+}
+
+.satisfy-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.satisfy-btn.active {
+    background: #fff;
+    color: #000;
+}
+
+/* ==========================================================================
+   СКАМ-БАННЕРЫ И РЕКЛАМА РУНЕТА
+   ========================================================================== */
+#scam-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.scam-banner {
+    pointer-events: auto;
+    position: absolute;
+    width: 280px;
+    border-radius: 6px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.85), 0 0 0 2px rgba(255, 255, 255, 0.2);
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: Arial, "Helvetica Neue", sans-serif;
+    animation: scamSpawn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+}
+
+@keyframes scamSpawn {
+    from { transform: scale(0.6) rotate(-5deg); opacity: 0; }
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.scam-close {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.scam-close:hover {
+    background: red;
+}
+
+.scam-title {
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    padding-right: 18px;
+    letter-spacing: -0.3px;
+}
+
+.scam-desc {
+    font-size: 11px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.scam-cta {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    animation: ctaPulse 1s infinite alternate;
+}
+
+@keyframes ctaPulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+/* Разновидности мем-баннеров */
+.scam-garage {
+    background: #ffea00;
+    color: #000;
+    border: 3px dashed #d50000;
+}
+.scam-garage .scam-title { color: #d50000; }
+.scam-garage .scam-cta { background: #d50000; color: #fff; }
+
+.scam-win {
+    background: linear-gradient(135deg, #ff0055, #ff9900);
+    color: #fff;
+    border: 2px solid #ffd700;
+}
+.scam-win .scam-cta { background: #ffd700; color: #000; }
+
+.scam-virus {
+    background: #1a1a1a;
+    color: #fff;
+    border: 2px solid #ff3b30;
+}
+.scam-virus .scam-title { color: #ff3b30; }
+.scam-virus .scam-cta { background: #ff3b30; color: #fff; }
+
+.scam-doctor {
+    background: #e3f2fd;
+    color: #0d47a1;
+    border: 2px solid #2196f3;
+}
+.scam-doctor .scam-title { color: #b71c1c; }
+.scam-doctor .scam-cta { background: #2e7d32; color: #fff; }
+
+.scam-singles {
+    background: linear-gradient(135deg, #880e4f, #ad1457);
+    color: #fff;
+    border: 2px solid #f06292;
+}
+.scam-singles .scam-cta { background: #f06292; color: #fff; }
+
