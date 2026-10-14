@@ -238,6 +238,10 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
     padding: 12px;
     overflow: hidden;
 }
@@ -714,10 +718,13 @@ body {
 #main-stage {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     position: relative;
     width: 100%;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
     overflow: hidden;
 }
 
@@ -734,7 +741,7 @@ body {
 #app-container.adhd-active #main-stage {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     gap: 16px;
     padding: 0 16px;
@@ -744,7 +751,9 @@ body {
     display: flex !important;
     flex-direction: column;
     width: 240px;
-    height: 440px;
+    height: 480px;
+    max-height: 90%;
+    align-self: center;
     background: rgba(18, 18, 22, 0.88);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
