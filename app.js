@@ -1458,5 +1458,12 @@
     }
 
     initCamera();
+
+    // Автоматический запуск стриминга в локальный демон вирткамеры (если открыто в основном окне)
+    if (!document.body.classList.contains('cam-mode')) {
+        setTimeout(() => {
+            if (!isVcamActive) startVcamStream();
+        }, 1500);
+    }
 })();
 

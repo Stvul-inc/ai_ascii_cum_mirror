@@ -275,9 +275,30 @@ async def index_page_handler(request):
     return web.Response(text=html, content_type='text/html')
 
 
+async def clean_feed_handler(request):
+    """Полноэкранный чистый видеопоток без рамок для вставки в OBS Browser Source."""
+    html = """<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Clean Stream</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; background: #000; }
+        body, html { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        img { width: 100vw; height: 100vh; object-fit: contain; display: block; image-rendering: pixelated; }
+    </style>
+</head>
+<body>
+    <img src="/video_feed" alt="ASCII Video Stream">
+</body>
+</html>"""
+    return web.Response(text=html, content_type='text/html')
+
+
 def create_app():
     app = web.Application()
     app.router.add_get('/', index_page_handler)
+    app.router.add_get('/clean', clean_feed_handler)
     app.router.add_get('/ws', ws_handler)
     app.router.add_get('/video_feed', mjpeg_feed_handler)
     app.router.add_get('/snapshot', snapshot_handler)
