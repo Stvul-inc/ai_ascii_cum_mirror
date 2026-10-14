@@ -1,36 +1,30 @@
-/* Apple Minimalist Glassmorphism Design System */
+/* Apple Minimalist Glassmorphism Design System — iOS Camera Edition */
 :root {
-    --bg-base: #09090b;
-    --bg-surface: rgba(22, 22, 26, 0.75);
-    --bg-surface-elevated: rgba(32, 32, 38, 0.85);
-    --bg-button: rgba(255, 255, 255, 0.07);
-    --bg-button-hover: rgba(255, 255, 255, 0.14);
-    --bg-button-active: rgba(255, 255, 255, 0.22);
+    --bg-base: #000000;
+    --bg-surface: rgba(22, 22, 24, 0.75);
+    --bg-surface-elevated: rgba(30, 30, 34, 0.88);
+    --bg-button: rgba(255, 255, 255, 0.08);
+    --bg-button-hover: rgba(255, 255, 255, 0.16);
+    --bg-button-active: rgba(255, 255, 255, 0.24);
     
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-focus: rgba(10, 132, 255, 0.6);
+    --border-subtle: rgba(255, 255, 255, 0.1);
     
     --text-primary: #f5f5f7;
     --text-secondary: #98989d;
-    --text-tertiary: #636366;
+    --text-gold: #ffcc00;
     
     --accent-blue: #0a84ff;
-    --accent-blue-hover: #0071e3;
     --accent-green: #30d158;
-    --accent-orange: #ff9f0a;
-    --accent-purple: #bf5af2;
-    --accent-red: #ff453a;
+    --accent-yellow: #ffd60a;
 
     --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
-    --font-mono: "SF Mono", "Menlo", "Courier New", monospace;
+    --font-mono: "SF Mono", "Menlo", monospace;
     
     --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 18px;
+    --radius-md: 14px;
     --radius-full: 9999px;
     
-    --shadow-glass: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
-    --shadow-glow: 0 0 20px rgba(10, 132, 255, 0.35);
+    --shadow-glass: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -55,33 +49,33 @@ body {
     flex-direction: column;
     height: 100vh;
     width: 100vw;
-    background: radial-gradient(circle at 50% 0%, #15151c 0%, #09090b 70%);
+    background: radial-gradient(circle at 50% 15%, #181820 0%, #000000 85%);
 }
 
-/* 1. Верхний статус-бар macOS */
+/* 1. Верхний статус-бар macOS / iOS */
 #mac-header {
-    height: 48px;
+    height: 46px;
     background: var(--bg-surface);
-    backdrop-filter: blur(25px) saturate(190%);
-    -webkit-backdrop-filter: blur(25px) saturate(190%);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 18px;
+    padding: 0 16px;
     z-index: 100;
 }
 
 .header-left, .header-center, .header-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .traffic-lights {
     display: flex;
     gap: 8px;
-    margin-right: 6px;
+    margin-right: 4px;
 }
 
 .traffic-lights .light {
@@ -100,8 +94,8 @@ body {
     align-items: center;
     gap: 6px;
     background: rgba(48, 209, 88, 0.15);
-    border: 1px solid rgba(48, 209, 88, 0.3);
-    padding: 3px 9px;
+    border: 1px solid rgba(48, 209, 88, 0.35);
+    padding: 3px 8px;
     border-radius: var(--radius-full);
 }
 
@@ -123,7 +117,6 @@ body {
     font-size: 11px;
     font-weight: 700;
     color: var(--accent-green);
-    letter-spacing: 0.5px;
 }
 
 .header-divider {
@@ -136,29 +129,56 @@ body {
     font-size: 13px;
     font-weight: 600;
     letter-spacing: -0.2px;
-    color: var(--text-primary);
 }
 
-.status-pill {
+/* Верхние тумблеры iOS */
+.top-controls {
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 3px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-subtle);
+}
+
+.top-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 7px;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-subtle);
-    padding: 5px 14px;
-    border-radius: var(--radius-full);
-    font-size: 12px;
-    font-weight: 500;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.top-icon-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.top-icon-btn.active {
+    background: var(--bg-button-active);
+    color: var(--accent-yellow);
 }
 
 .stat-badge {
     background: var(--bg-button);
     border: 1px solid var(--border-subtle);
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-radius: var(--radius-sm);
     font-size: 11px;
     font-family: var(--font-mono);
     color: var(--text-secondary);
+}
+
+.stat-badge#format-badge {
+    color: var(--text-gold);
+    font-weight: 700;
 }
 
 .stat-badge.fps {
@@ -184,14 +204,14 @@ body {
     color: var(--text-primary);
 }
 
-/* 2. Центральный адаптивный вьюпорт */
+/* 2. Центральный вьюпорт */
 #viewport-container {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 16px;
+    padding: 12px;
     overflow: hidden;
 }
 
@@ -203,7 +223,7 @@ body {
     border-radius: var(--radius-md);
     overflow: hidden;
     background: #000;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--border-subtle);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--border-subtle);
     max-width: 100%;
     max-height: 100%;
 }
@@ -211,26 +231,123 @@ body {
 #ascii-canvas {
     display: block;
     image-rendering: pixelated;
-    transition: opacity 0.2s ease;
 }
 
-/* Оверлей паузы */
-#pause-overlay {
+/* Сетка третей 3х3 Apple */
+#camera-grid {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+    pointer-events: none;
+    z-index: 15;
+}
+
+#camera-grid.hidden { display: none; }
+
+.grid-line {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.grid-line.h1 { top: 33.333%; left: 0; right: 0; height: 1px; }
+.grid-line.h2 { top: 66.666%; left: 0; right: 0; height: 1px; }
+.grid-line.v1 { left: 33.333%; top: 0; bottom: 0; width: 1px; }
+.grid-line.v2 { left: 66.666%; top: 0; bottom: 0; width: 1px; }
+
+/* Виньетка Портретного режима */
+#portrait-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.75) 100%);
+    z-index: 12;
+}
+
+#portrait-vignette.hidden { display: none; }
+
+/* Зум-кнопки iPhone (0.5x, 1x, 2x) */
+#zoom-hud {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 30;
+    pointer-events: auto;
+}
+
+.zoom-selector {
+    display: flex;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-full);
+    padding: 3px;
+    gap: 4px;
+}
+
+.zoom-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.zoom-btn:hover { background: rgba(255, 255, 255, 0.15); }
+
+.zoom-btn.active {
+    background: rgba(255, 255, 255, 0.3);
+    color: var(--text-gold);
+    transform: scale(1.08);
+}
+
+/* Обратный отсчёт таймера */
+#countdown-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
-    transition: opacity 0.2s ease;
-}
-
-#pause-overlay.hidden {
-    opacity: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 50;
     pointer-events: none;
 }
+
+#countdown-overlay.hidden { display: none; }
+
+#countdown-number {
+    font-size: 110px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+    animation: popIn 0.9s infinite ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.6); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
+/* Пауза */
+#pause-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 25;
+}
+
+#pause-overlay.hidden { display: none; }
 
 .pause-badge {
     background: var(--bg-surface-elevated);
@@ -243,54 +360,81 @@ body {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 1px;
-    color: var(--text-primary);
     box-shadow: var(--shadow-glass);
 }
 
-/* Вспышка затвора Apple */
+/* Вспышка затвора */
 #flash-overlay {
     position: absolute;
     inset: 0;
     background: #fff;
     opacity: 0;
     pointer-events: none;
-    z-index: 20;
+    z-index: 40;
     transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #flash-overlay.active {
-    opacity: 0.85;
-    transition: opacity 0.05s ease-out;
+    opacity: 0.95;
+    transition: opacity 0.04s ease-out;
 }
 
-/* 3. Нижний плавающий док (macOS Floating Pill Dock) */
-#floating-dock {
-    height: 76px;
+/* 3. Переключатель режимов съёмки iPhone (Карусель режимов) */
+#camera-modes-bar {
+    height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 16px;
+    z-index: 90;
+}
+
+.modes-track {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.mode-item {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-system);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mode-item:hover { color: #fff; }
+
+.mode-item.active {
+    color: var(--text-gold);
+    font-weight: 700;
+    transform: scale(1.08);
+}
+
+/* 4. Нижний плавающий док */
+#floating-dock {
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 14px;
     z-index: 100;
-    pointer-events: none;
 }
 
 .dock-inner {
-    pointer-events: auto;
     background: var(--bg-surface);
-    backdrop-filter: blur(35px) saturate(200%);
-    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-full);
     padding: 6px 14px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     box-shadow: var(--shadow-glass);
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dock-inner:hover {
-    box-shadow: var(--shadow-glass), 0 0 25px rgba(255, 255, 255, 0.03);
 }
 
 .dock-group {
@@ -305,13 +449,12 @@ body {
     background: var(--border-subtle);
 }
 
-/* Сегментированный переключатель режимов */
 .segmented-control {
     display: flex;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     padding: 3px;
     border-radius: var(--radius-full);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .seg-btn {
@@ -319,43 +462,37 @@ body {
     border: none;
     color: var(--text-secondary);
     font-family: var(--font-system);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: var(--radius-full);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.16s ease;
 }
 
-.seg-btn:hover {
-    color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.06);
-}
+.seg-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
 
 .seg-btn.active {
     background: var(--bg-button-active);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Слайдеры */
 .controls-group {
-    gap: 16px;
+    gap: 14px;
     padding: 0 4px;
 }
 
 .control-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .control-item label {
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 9px;
+    font-weight: 700;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -366,11 +503,16 @@ body {
 .control-item input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    width: 80px;
+    width: 90px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 2px;
     outline: none;
+    transition: background 0.15s ease;
+}
+
+.control-item input[type="range"]:hover {
+    background: rgba(255, 255, 255, 0.35);
 }
 
 .control-item input[type="range"]::-webkit-slider-thumb {
@@ -381,7 +523,7 @@ body {
     border-radius: 50%;
     background: #fff;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
     transition: transform 0.1s ease;
 }
 
@@ -395,14 +537,14 @@ body {
     border: 1px solid var(--border-subtle);
     color: var(--text-primary);
     font-family: var(--font-system);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    padding: 7px 14px;
+    padding: 7px 12px;
     border-radius: var(--radius-full);
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     transition: all 0.15s ease;
 }
 
@@ -422,39 +564,58 @@ body {
     color: #4da2ff;
 }
 
-.dock-btn.highlight:hover {
-    background: rgba(10, 132, 255, 0.25);
-    color: #fff;
+/* Фирменная кнопка спуска затвора iPhone */
+.apple-shutter {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: transparent;
+    border: 3px solid #ffffff;
+    padding: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dock-btn.primary {
-    background: var(--accent-blue);
-    border-color: var(--accent-blue);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.35);
+.apple-shutter .shutter-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.dock-btn.primary:hover {
-    background: var(--accent-blue-hover);
-    box-shadow: 0 6px 16px rgba(10, 132, 255, 0.5);
+.apple-shutter:hover {
+    transform: scale(1.06);
 }
 
-/* 4. Apple Toast Banner */
+.apple-shutter:active {
+    transform: scale(0.94);
+}
+
+.apple-shutter:active .shutter-inner {
+    transform: scale(0.85);
+    background: #cccccc;
+}
+
+/* Toast */
 #toast {
     position: fixed;
-    top: 60px;
+    top: 56px;
     left: 50%;
     transform: translateX(-50%) translateY(0);
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    padding: 9px 18px;
+    padding: 8px 16px;
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-primary);
     box-shadow: var(--shadow-glass);

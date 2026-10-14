@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASCII Mirror Pro — Apple Minimalist Camera</title>
-    <meta name="description" content="Современное высокопроизводительное зеркало ASCII с веб-камерой в стиле Apple Minimalism">
+    <title>ASCII Mirror Pro — iPhone Studio Camera</title>
+    <meta name="description" content="Полноценная камера iPhone в формате ASCII-арта: Портрет, Квадрат 1:1, Фото 4:3, Кино 16:9, Зум и Таймер">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,18 +22,30 @@
                     <span class="badge-text">LIVE</span>
                 </div>
                 <span class="header-divider"></span>
-                <h1 class="app-title">ASCII Mirror Studio</h1>
+                <h1 class="app-title">Camera Studio</h1>
             </div>
 
+            <!-- Верхние быстрые тумблеры iPhone (Таймер, Сетка 3x3, Зеркало) -->
             <div class="header-center">
-                <div class="status-pill" id="current-mode-pill">
-                    <span id="pill-mode-icon">🌈</span>
-                    <span id="pill-mode-name">TrueColor RGB</span>
+                <div class="top-controls">
+                    <button id="btn-timer" class="top-icon-btn" title="Таймер спуска (T)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span id="timer-label">ВЫКЛ</span>
+                    </button>
+                    <button id="btn-grid-toggle" class="top-icon-btn" title="Сетка третей 3×3 (G)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                        <span>Сетка</span>
+                    </button>
+                    <button id="btn-mirror" class="top-icon-btn active" title="Зеркало селфи (M)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+                        <span>Зеркало</span>
+                    </button>
                 </div>
             </div>
 
             <div class="header-right">
-                <div class="stat-badge" id="resolution-badge">120 × 66</div>
+                <div class="stat-badge" id="format-badge">КВАДРАТ 1:1</div>
+                <div class="stat-badge" id="resolution-badge">100 × 100</div>
                 <div class="stat-badge fps" id="fps-counter">60 FPS</div>
                 <button id="btn-fullscreen" class="icon-btn" title="Полноэкранный режим (F)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
@@ -41,10 +53,36 @@
             </div>
         </header>
 
-        <!-- Центральная область холста (Адаптивный вьюпорт) -->
+        <!-- Центральная область холста (Адаптивный вьюпорт камеры) -->
         <main id="viewport-container">
             <div id="canvas-wrapper">
                 <canvas id="ascii-canvas"></canvas>
+
+                <!-- Сетка третей 3x3 iPhone -->
+                <div id="camera-grid" class="hidden">
+                    <div class="grid-line h1"></div>
+                    <div class="grid-line h2"></div>
+                    <div class="grid-line v1"></div>
+                    <div class="grid-line v2"></div>
+                </div>
+
+                <!-- Виньетка режима ПОРТРЕТ -->
+                <div id="portrait-vignette" class="hidden"></div>
+
+                <!-- Зум бейдж на экране iPhone -->
+                <div id="zoom-hud">
+                    <div class="zoom-selector">
+                        <button class="zoom-btn" data-zoom="0.5">0.5x</button>
+                        <button class="zoom-btn active" data-zoom="1.0">1x</button>
+                        <button class="zoom-btn" data-zoom="2.0">2x</button>
+                    </div>
+                </div>
+
+                <!-- Обратный отсчёт таймера -->
+                <div id="countdown-overlay" class="hidden">
+                    <span id="countdown-number">3</span>
+                </div>
+
                 <!-- Оверлей паузы -->
                 <div id="pause-overlay" class="hidden">
                     <div class="pause-badge">
@@ -52,71 +90,69 @@
                         <span>ПАУЗА</span>
                     </div>
                 </div>
-                <!-- Вспышка затвора камеры -->
+
+                <!-- Вспышка затвора Apple Camera -->
                 <div id="flash-overlay"></div>
             </div>
         </main>
 
-        <!-- Нижний стеклянный плавающий док (macOS Floating Pill Dock) -->
+        <!-- Режимы съёмки iPhone (Карусель форматов) -->
+        <div id="camera-modes-bar">
+            <div class="modes-track" id="format-selector">
+                <button class="mode-item" data-format="pano">ПАНОРАМА</button>
+                <button class="mode-item" data-format="16_9">16 : 9</button>
+                <button class="mode-item" data-format="photo">ФОТО</button>
+                <button class="mode-item" data-format="portrait">ПОРТРЕТ</button>
+                <button class="mode-item active" data-format="square">КВАДРАТ</button>
+            </div>
+        </div>
+
+        <!-- Нижний стеклянный плавающий док управления -->
         <footer id="floating-dock">
             <div class="dock-inner">
-                <!-- Группа переключения режимов -->
+                <!-- Селектор палитр -->
                 <div class="dock-group">
-                    <div class="segmented-control" id="mode-selector">
-                        <button class="seg-btn active" data-mode="pixel" title="Натуральные цвета камеры">
-                            <span class="btn-icon">🌈</span> RGB
-                        </button>
-                        <button class="seg-btn" data-mode="neon" title="Кибернетический неон">
-                            <span class="btn-icon">🔮</span> Neon
-                        </button>
-                        <button class="seg-btn" data-mode="matrix" title="Терминал Матрица">
-                            <span class="btn-icon">💚</span> Matrix
-                        </button>
-                        <button class="seg-btn" data-mode="silver" title="Apple Silver монохром">
-                            <span class="btn-icon">⚪</span> Silver
-                        </button>
-                        <button class="seg-btn" data-mode="amber" title="Винтажный янтарь">
-                            <span class="btn-icon">🌅</span> Amber
-                        </button>
-                        <button class="seg-btn" data-mode="invert" title="Инверсия цветов">
-                            <span class="btn-icon">🔲</span> Invert
-                        </button>
+                    <div class="segmented-control" id="color-palette-selector">
+                        <button class="seg-btn active" data-mode="pixel" title="Натуральные цвета камеры">🌈 RGB</button>
+                        <button class="seg-btn" data-mode="neon" title="Кибернетический неон">🔮 Неон</button>
+                        <button class="seg-btn" data-mode="matrix" title="Терминал Матрица">💚 Матрица</button>
+                        <button class="seg-btn" data-mode="silver" title="Монохром Apple">⚪ Ч/Б</button>
+                        <button class="seg-btn" data-mode="amber" title="Винтажный янтарь">🌅 Янтарь</button>
+                        <button class="seg-btn" data-mode="invert" title="Инверсия цветов">🔲 Негатив</button>
                     </div>
                 </div>
 
                 <div class="dock-separator"></div>
 
-                <!-- Настройки плотности и контраста -->
+                <!-- Ползунки разрешения и контраста -->
                 <div class="dock-group controls-group">
                     <div class="control-item">
-                        <label for="density-slider">Сетка <span id="density-val">120</span></label>
-                        <input type="range" id="density-slider" min="50" max="180" value="120" step="5">
+                        <label for="resolution-slider">Разрешение <span id="resolution-val">100</span></label>
+                        <input type="range" id="resolution-slider" min="10" max="360" value="100" step="1" title="Шкала разрешения сетки (10 - 360)">
                     </div>
                     <div class="control-item">
                         <label for="contrast-slider">Контраст <span id="contrast-val">1.0</span></label>
-                        <input type="range" id="contrast-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                        <input type="range" id="contrast-slider" min="0.5" max="2.0" value="1.0" step="0.1" title="Регулировка контраста">
                     </div>
                 </div>
 
                 <div class="dock-separator"></div>
 
-                <!-- Быстрые действия -->
+                <!-- Действия камеры: Кнопка затвора Apple Shutter, Копирование, Пауза -->
                 <div class="dock-group actions-group">
-                    <button id="btn-mirror" class="dock-btn" title="Зеркальное отражение (M)">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
-                        <span>Зеркало</span>
-                    </button>
-                    <button id="btn-pause" class="dock-btn" title="Пауза / Возобновить (Space/P)">
+                    <button id="btn-pause" class="dock-btn" title="Пауза / Пуск (Space/P)">
                         <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
                         <span id="pause-btn-text">Пауза</span>
                     </button>
+
                     <button id="btn-copy" class="dock-btn highlight" title="Скопировать текстовый ASCII в буфер (C)">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                        <span>Скопировать</span>
+                        <span>Текст</span>
                     </button>
-                    <button id="btn-snapshot" class="dock-btn primary" title="Сохранить снимок PNG (S)">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-                        <span>Снимок</span>
+
+                    <!-- Фирменная круглая кнопка спуска затвора iPhone -->
+                    <button id="btn-shutter" class="apple-shutter" title="Сделать снимок (S/Enter)">
+                        <span class="shutter-inner"></span>
                     </button>
                 </div>
             </div>
@@ -125,7 +161,7 @@
         <!-- Toast уведомления -->
         <div id="toast" class="hidden">
             <span id="toast-icon">✓</span>
-            <span id="toast-message">Текст скопирован</span>
+            <span id="toast-message">Снимок сохранён</span>
         </div>
     </div>
 
