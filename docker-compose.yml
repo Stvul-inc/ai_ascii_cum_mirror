@@ -3,6 +3,7 @@ services:
     build: .
     container_name: ascii_mirror_app
     ports:
+      - "8080:8080"
       - "6080:6080"
       - "5900:5900"
     restart: unless-stopped

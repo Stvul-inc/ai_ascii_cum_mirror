@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Mirror Pro — Apple Minimalist Camera</title>
+    <meta name="description" content="Современное высокопроизводительное зеркало ASCII с веб-камерой в стиле Apple Minimalism">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Верхний статус-бар (macOS Window Header) -->
+        <header id="mac-header">
+            <div class="header-left">
+                <div class="traffic-lights">
+                    <span class="light close"></span>
+                    <span class="light minimize"></span>
+                    <span class="light zoom"></span>
+                </div>
+                <div class="live-badge">
+                    <span class="pulse-dot"></span>
+                    <span class="badge-text">LIVE</span>
+                </div>
+                <span class="header-divider"></span>
+                <h1 class="app-title">ASCII Mirror Studio</h1>
+            </div>
+
+            <div class="header-center">
+                <div class="status-pill" id="current-mode-pill">
+                    <span id="pill-mode-icon">🌈</span>
+                    <span id="pill-mode-name">TrueColor RGB</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="stat-badge" id="resolution-badge">120 × 66</div>
+                <div class="stat-badge fps" id="fps-counter">60 FPS</div>
+                <button id="btn-fullscreen" class="icon-btn" title="Полноэкранный режим (F)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Центральная область холста (Адаптивный вьюпорт) -->
+        <main id="viewport-container">
+            <div id="canvas-wrapper">
+                <canvas id="ascii-canvas"></canvas>
+                <!-- Оверлей паузы -->
+                <div id="pause-overlay" class="hidden">
+                    <div class="pause-badge">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <span>ПАУЗА</span>
+                    </div>
+                </div>
+                <!-- Вспышка затвора камеры -->
+                <div id="flash-overlay"></div>
+            </div>
+        </main>
+
+        <!-- Нижний стеклянный плавающий док (macOS Floating Pill Dock) -->
+        <footer id="floating-dock">
+            <div class="dock-inner">
+                <!-- Группа переключения режимов -->
+                <div class="dock-group">
+                    <div class="segmented-control" id="mode-selector">
+                        <button class="seg-btn active" data-mode="pixel" title="Натуральные цвета камеры">
+                            <span class="btn-icon">🌈</span> RGB
+                        </button>
+                        <button class="seg-btn" data-mode="neon" title="Кибернетический неон">
+                            <span class="btn-icon">🔮</span> Neon
+                        </button>
+                        <button class="seg-btn" data-mode="matrix" title="Терминал Матрица">
+                            <span class="btn-icon">💚</span> Matrix
+                        </button>
+                        <button class="seg-btn" data-mode="silver" title="Apple Silver монохром">
+                            <span class="btn-icon">⚪</span> Silver
+                        </button>
+                        <button class="seg-btn" data-mode="amber" title="Винтажный янтарь">
+                            <span class="btn-icon">🌅</span> Amber
+                        </button>
+                        <button class="seg-btn" data-mode="invert" title="Инверсия цветов">
+                            <span class="btn-icon">🔲</span> Invert
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dock-separator"></div>
+
+                <!-- Настройки плотности и контраста -->
+                <div class="dock-group controls-group">
+                    <div class="control-item">
+                        <label for="density-slider">Сетка <span id="density-val">120</span></label>
+                        <input type="range" id="density-slider" min="50" max="180" value="120" step="5">
+                    </div>
+                    <div class="control-item">
+                        <label for="contrast-slider">Контраст <span id="contrast-val">1.0</span></label>
+                        <input type="range" id="contrast-slider" min="0.5" max="2.0" value="1.0" step="0.1">
+                    </div>
+                </div>
+
+                <div class="dock-separator"></div>
+
+                <!-- Быстрые действия -->
+                <div class="dock-group actions-group">
+                    <button id="btn-mirror" class="dock-btn" title="Зеркальное отражение (M)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+                        <span>Зеркало</span>
+                    </button>
+                    <button id="btn-pause" class="dock-btn" title="Пауза / Возобновить (Space/P)">
+                        <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        <span id="pause-btn-text">Пауза</span>
+                    </button>
+                    <button id="btn-copy" class="dock-btn highlight" title="Скопировать текстовый ASCII в буфер (C)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        <span>Скопировать</span>
+                    </button>
+                    <button id="btn-snapshot" class="dock-btn primary" title="Сохранить снимок PNG (S)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                        <span>Снимок</span>
+                    </button>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Toast уведомления -->
+        <div id="toast" class="hidden">
+            <span id="toast-icon">✓</span>
+            <span id="toast-message">Текст скопирован</span>
+        </div>
+    </div>
+
+    <!-- Скрытые элементы камеры -->
+    <video id="webcam-video" playsinline autoplay muted style="display: none;"></video>
+    <canvas id="offscreen-canvas" style="display: none;"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>

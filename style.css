@@ -1,0 +1,474 @@
+/* Apple Minimalist Glassmorphism Design System */
+:root {
+    --bg-base: #09090b;
+    --bg-surface: rgba(22, 22, 26, 0.75);
+    --bg-surface-elevated: rgba(32, 32, 38, 0.85);
+    --bg-button: rgba(255, 255, 255, 0.07);
+    --bg-button-hover: rgba(255, 255, 255, 0.14);
+    --bg-button-active: rgba(255, 255, 255, 0.22);
+    
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-focus: rgba(10, 132, 255, 0.6);
+    
+    --text-primary: #f5f5f7;
+    --text-secondary: #98989d;
+    --text-tertiary: #636366;
+    
+    --accent-blue: #0a84ff;
+    --accent-blue-hover: #0071e3;
+    --accent-green: #30d158;
+    --accent-orange: #ff9f0a;
+    --accent-purple: #bf5af2;
+    --accent-red: #ff453a;
+
+    --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+    --font-mono: "SF Mono", "Menlo", "Courier New", monospace;
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-full: 9999px;
+    
+    --shadow-glass: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    --shadow-glow: 0 0 20px rgba(10, 132, 255, 0.35);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-system);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background: radial-gradient(circle at 50% 0%, #15151c 0%, #09090b 70%);
+}
+
+/* 1. Верхний статус-бар macOS */
+#mac-header {
+    height: 48px;
+    background: var(--bg-surface);
+    backdrop-filter: blur(25px) saturate(190%);
+    -webkit-backdrop-filter: blur(25px) saturate(190%);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    z-index: 100;
+}
+
+.header-left, .header-center, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.traffic-lights {
+    display: flex;
+    gap: 8px;
+    margin-right: 6px;
+}
+
+.traffic-lights .light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.traffic-lights .close { background: #ff5f57; }
+.traffic-lights .minimize { background: #febc2e; }
+.traffic-lights .zoom { background: #28c840; }
+
+.live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(48, 209, 88, 0.15);
+    border: 1px solid rgba(48, 209, 88, 0.3);
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+}
+
+.pulse-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-green);
+    animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.badge-text {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-green);
+    letter-spacing: 0.5px;
+}
+
+.header-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border-subtle);
+}
+
+.app-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--text-primary);
+}
+
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.stat-badge {
+    background: var(--bg-button);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+}
+
+.stat-badge.fps {
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+    background: var(--bg-button);
+    color: var(--text-primary);
+}
+
+/* 2. Центральный адаптивный вьюпорт */
+#viewport-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 16px;
+    overflow: hidden;
+}
+
+#canvas-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--border-subtle);
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#ascii-canvas {
+    display: block;
+    image-rendering: pixelated;
+    transition: opacity 0.2s ease;
+}
+
+/* Оверлей паузы */
+#pause-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+}
+
+#pause-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pause-badge {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 12px 24px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-glass);
+}
+
+/* Вспышка затвора Apple */
+#flash-overlay {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#flash-overlay.active {
+    opacity: 0.85;
+    transition: opacity 0.05s ease-out;
+}
+
+/* 3. Нижний плавающий док (macOS Floating Pill Dock) */
+#floating-dock {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 16px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.dock-inner {
+    pointer-events: auto;
+    background: var(--bg-surface);
+    backdrop-filter: blur(35px) saturate(200%);
+    -webkit-backdrop-filter: blur(35px) saturate(200%);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow-glass);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-inner:hover {
+    box-shadow: var(--shadow-glass), 0 0 25px rgba(255, 255, 255, 0.03);
+}
+
+.dock-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dock-separator {
+    width: 1px;
+    height: 26px;
+    background: var(--border-subtle);
+}
+
+/* Сегментированный переключатель режимов */
+.segmented-control {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 3px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.seg-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-system);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.seg-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.seg-btn.active {
+    background: var(--bg-button-active);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Слайдеры */
+.controls-group {
+    gap: 16px;
+    padding: 0 4px;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.control-item label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.control-item input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+    outline: none;
+}
+
+.control-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease;
+}
+
+.control-item input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+/* Кнопки действий */
+.dock-btn {
+    background: var(--bg-button);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-system);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.dock-btn:hover {
+    background: var(--bg-button-hover);
+    transform: translateY(-1px);
+}
+
+.dock-btn:active {
+    transform: scale(0.96);
+    background: var(--bg-button-active);
+}
+
+.dock-btn.highlight {
+    background: rgba(10, 132, 255, 0.15);
+    border-color: rgba(10, 132, 255, 0.35);
+    color: #4da2ff;
+}
+
+.dock-btn.highlight:hover {
+    background: rgba(10, 132, 255, 0.25);
+    color: #fff;
+}
+
+.dock-btn.primary {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.35);
+}
+
+.dock-btn.primary:hover {
+    background: var(--accent-blue-hover);
+    box-shadow: 0 6px 16px rgba(10, 132, 255, 0.5);
+}
+
+/* 4. Apple Toast Banner */
+#toast {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 9px 18px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-glass);
+    z-index: 1000;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#toast.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-15px);
+    pointer-events: none;
+}
+
+#toast-icon {
+    color: var(--accent-green);
+    font-weight: bold;
+}
